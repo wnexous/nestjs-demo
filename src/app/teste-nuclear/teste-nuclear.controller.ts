@@ -25,7 +25,6 @@ export class TesteNuclearController {
 
   @Get()
   async index() {
-    console.log('caiu aqui1');
     return this.dbService.searchAll();
   }
 
@@ -35,8 +34,7 @@ export class TesteNuclearController {
   }
 
   @Get(':id')
-  async getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    console.log('caiu aqui2');
+  async getById(@Param('id', new ParseUUIDPipe()) id: string) {  
     return await this.dbService.searchByIdOrFail(id);
   }
 
