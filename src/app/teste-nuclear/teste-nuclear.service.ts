@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Usuarios } from './entity/teste.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,11 +10,33 @@ export class TesteNuclearService {
     private readonly dbRepository: Repository<Usuarios>,
   ) {}
 
-  async searchAll() {}
+  async searchAll() {
+    return await this.dbRepository.find();
+  }
 
-  async searchOne() {}
+  async create(data: Usuarios) {
+    return await this.dbRepository.save(this.dbRepository.create(data));
+  }
 
-  async create() {}
+  async searchByIdOrFail(id: string) {
+    try {
+      return await this.dbRepository.findBy({ id });
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
 
-async deletebyId() {}
+  async deletebyId(id: string) {
+    await this.searchByIdOrFail(id);
+    return await this.dbRepository.delete({ id });
+  }
+
+  async updateById(id: string, data: Usuarios) {
+    const fetchData = await this.dbRepository.findBy({ id });
+
+    const getFirstElement = fetchData.find((elem) => elem.id == id);
+    this.dbRepository.merge(getFirstElement, data);
+
+    return await this.dbRepository.save(fetchData);
+  }
 }
