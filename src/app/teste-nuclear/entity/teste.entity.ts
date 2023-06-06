@@ -16,7 +16,7 @@ export class Usuarios {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ width: 32 })
   phone: number;
 
   @CreateDateColumn({ name: 'create_at' })

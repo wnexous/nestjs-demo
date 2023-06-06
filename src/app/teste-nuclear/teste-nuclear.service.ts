@@ -20,7 +20,9 @@ export class TesteNuclearService {
 
   async searchByIdOrFail(id: string) {
     try {
-      return await this.dbRepository.findBy({ id });
+      return (await this.dbRepository.findBy({ id })).find(
+        (elem) => elem.id == id,
+      );
     } catch (error) {
       throw new NotFoundException(error.message);
     }
@@ -32,9 +34,9 @@ export class TesteNuclearService {
   }
 
   async updateById(id: string, data: Usuarios) {
-    const fetchData = await this.dbRepository.findBy({ id });
+    const fetchData = await this.dbRepository.findOne({ where: { id } });
 
-    const getFirstElement = fetchData.find((elem) => elem.id == id);
+    const getFirstElement = fetchData;
     this.dbRepository.merge(getFirstElement, data);
 
     return await this.dbRepository.save(fetchData);
